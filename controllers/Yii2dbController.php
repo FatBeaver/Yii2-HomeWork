@@ -57,6 +57,12 @@ class Yii2dbController extends Controller
     {   
         $event = $this->findModel($id);
         $users = $event->author;
+
+        echo '<pre>';
+            var_dump($users, $users->events);
+            exit;
+        echo '</pre>';
+        
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
