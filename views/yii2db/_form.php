@@ -14,13 +14,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'start_at')->textInput() ?>
+    <?= $form->field($model, 'start_at')->textInput(['type' => 'date']) ?>
 
-    <?= $form->field($model, 'end_at')->textInput() ?>
+    <?= $form->field($model, 'end_at')->textInput(['type' => 'date']) ?>
 
-    <?= $form->field($model, 'create_ad')->textInput() ?>
+    <?= $form->field($model, 'create_ad')->textInput(['type' => 'date']) ?>
 
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+    <?= $form->field($model, 'updated_at')->textInput(['type' => 'date']) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

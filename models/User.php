@@ -2,52 +2,37 @@
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+use yii\db\ActiveQuery;
+
+/** 
+ * @property int $id
+ * @property string $username
+ * @property string $password
+ * @property string $access_token
+ * @property event[]
+ */
+class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
-
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
-
+   public static function tableName() {
+        return 'users';
+   }
 
     /**
      * {@inheritdoc}
      */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return self::findOne(['id' => $id]);
+
     }
 
     /**
      * {@inheritdoc}
      */
     public static function findIdentityByAccessToken($token, $type = null)
-    {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+    {   
+        return self::findOne(['access_token' => $token]);
+        
     }
 
     /**
@@ -58,13 +43,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findByUsername($username)
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return self::findOne(['username' => $username] );
     }
 
     /**
@@ -80,7 +59,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return $this->access_token;
     }
 
     /**
@@ -88,7 +67,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
+        return $this->access_token === $authKey;
     }
 
     /**
@@ -99,6 +78,38 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function validatePassword($password)
     {
-        return $this->password === $password;
+        return $this->password === $this->saltPassword($password);
+    }
+
+    public function rules()
+    {
+        return [
+            [['username', 'password'], 'required'],
+        ];
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        if ($this->getIsNewRecord() && $this->password) {
+            $this->password  =  $this->saltPassword($this->password);
+        }
+
+        if ($this->access_token) {
+            $this->access_token = \Yii::$app->security->generateRandomString();
+        }
+
+        return true;
+    }
+
+    private function saltPassword(string $password) {
+        return md5($password);
+    }
+
+    public function getEvents() {
+        return $this->hasMany(Yii2db::class, ['author_id' => 'id']);
     }
 }

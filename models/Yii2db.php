@@ -50,4 +50,8 @@ class Yii2db extends ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
+
+    public function getAuthor() {
+        return $this->hasOne(User::class, ['id' => 'author_id']);
+    }
 }

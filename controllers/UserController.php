@@ -3,19 +3,16 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Yii2db;
-use yii\data\ActiveDataProvider;
+use app\models\User;
+use app\models\search\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use Symfony\Component\BrowserKit;
-use yii\web\Response;
-use yii\helpers\VarDumper;
 
 /**
- * Yii2dbController implements the CRUD actions for Yii2db model.
+ * UserController implements the CRUD actions for User model.
  */
-class Yii2dbController extends Controller
+class UserController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -33,43 +30,41 @@ class Yii2dbController extends Controller
     }
 
     /**
-     * Lists all Yii2db models.
+     * Lists all User models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Yii2db::find(),
-        ]);
+        $searchModel = new UserSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * Displays a single Yii2db model.
+     * Displays a single User model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
-    {   
-        $event = $this->findModel($id);
-        $users = $event->author;
+    {
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new Yii2db model.
+     * Creates a new User model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Yii2db();
+        $model = new User();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -81,7 +76,7 @@ class Yii2dbController extends Controller
     }
 
     /**
-     * Updates an existing Yii2db model.
+     * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -101,7 +96,7 @@ class Yii2dbController extends Controller
     }
 
     /**
-     * Deletes an existing Yii2db model.
+     * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -115,28 +110,18 @@ class Yii2dbController extends Controller
     }
 
     /**
-     * Finds the Yii2db model based on its primary key value.
+     * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Yii2db the loaded model
+     * @return User the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Yii2db::findOne($id)) !== null) {
+        if (($model = User::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    public function actionJson() {
-        //Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $request = \Yii::$app->getRequest();
-        $id = (int) $request->getQueryParam('id');
-
-        $model = $this->findModel($id);
-        return $this->asJson($model->getAttributes());
     }
 }

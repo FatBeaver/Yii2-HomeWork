@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use yii\db\Exception;
+use app\models\Yii2db;
 
 class SiteController extends Controller
 {
@@ -60,7 +62,11 @@ class SiteController extends Controller
      * @return string
      */
     public function actionIndex()
-    {
+    {   
+        $get    =  \Yii::$app->getRequest();
+        $id     =  $get->getQueryParam('id');
+        $result =  Yii2db::find()->andWhere(['=', 'id', $id])->one();    
+
         return $this->render('index');
     }
 
@@ -125,4 +131,5 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+    
 }

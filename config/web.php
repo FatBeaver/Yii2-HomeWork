@@ -48,6 +48,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'yii2db/json/<id:\d+>' => 'yii2db/json'
             ],
         ],
     ],
