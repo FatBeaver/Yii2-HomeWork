@@ -3,19 +3,17 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Yii2db;
-use yii\data\ActiveDataProvider;
+use app\models\Calendar;
+use app\models\search\CalendarSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use Symfony\Component\BrowserKit;
-use yii\web\Response;
-use yii\helpers\VarDumper;
+use Faker\Provider\zh_CN\DateTime;
 
 /**
- * Yii2dbController implements the CRUD actions for Yii2db model.
+ * CalendarController implements the CRUD actions for Calendar model.
  */
-class Yii2dbController extends Controller
+class CalendarController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -33,49 +31,58 @@ class Yii2dbController extends Controller
     }
 
     /**
-     * Lists all Yii2db models.
+     * Lists all Calendar models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Yii2db::find(),
-        ]);
-
+        $searchModel = new CalendarSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
 
+    public function actionCalendar() {
+
+       $calendar = new Calendar();
+       $MonthNotes = $calendar->getNotesForCalendar();
+      
+       $this->view->registerCssFile('assets/AppAsset.php');
+        return $this->render('calendar', ['monthNotes' => $MonthNotes]);
+
+    }
+
     /**
-     * Displays a single Yii2db model.
+     * Displays a single Calendar model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {   
-        $event = $this->findModel($id);
-        $users = $event->author;
+        $note = $this->findModel($id);
 
-        echo '<pre>';
-            var_dump($users, $users->events);
-            exit;
-        echo '</pre>';
-        
+        $author = $note->author;
+        $note = $author->notes;  
+
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new Yii2db model.
+     * Creates a new Calendar model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Yii2db();
+        $model = new Calendar();
+        $id = \Yii::$app->user->identity->id;
+        $model->author_id = $id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -87,7 +94,7 @@ class Yii2dbController extends Controller
     }
 
     /**
-     * Updates an existing Yii2db model.
+     * Updates an existing Calendar model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -107,7 +114,7 @@ class Yii2dbController extends Controller
     }
 
     /**
-     * Deletes an existing Yii2db model.
+     * Deletes an existing Calendar model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -121,28 +128,18 @@ class Yii2dbController extends Controller
     }
 
     /**
-     * Finds the Yii2db model based on its primary key value.
+     * Finds the Calendar model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Yii2db the loaded model
+     * @return Calendar the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Yii2db::findOne($id)) !== null) {
+        if (($model = Calendar::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    public function actionJson() {
-        //Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $request = \Yii::$app->getRequest();
-        $id = (int) $request->getQueryParam('id');
-
-        $model = $this->findModel($id);
-        return $this->asJson($model->getAttributes());
     }
 }

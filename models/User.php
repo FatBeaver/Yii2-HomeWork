@@ -98,7 +98,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             $this->password  =  $this->saltPassword($this->password);
         }
 
-        if ($this->access_token) {
+        if (!$this->access_token) {
             $this->access_token = \Yii::$app->security->generateRandomString();
         }
 
@@ -109,7 +109,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return md5($password);
     }
 
-    public function getEvents() {
-        return $this->hasMany(Yii2db::class, ['author_id' => 'id']);
+    public function getNotes() {
+        return $this->hasMany(Calendar::class, ['author_id' => 'id']);
     }
 }

@@ -3,14 +3,14 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Yii2db */
+/* @var $model app\models\Calendar */
 
-$this->title = 'Update Yii2db: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Yii2dbs', 'url' => ['index']];
+$this->title = 'Update Calendar: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Calendars', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="yii2db-update">
+<div class="calendar-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

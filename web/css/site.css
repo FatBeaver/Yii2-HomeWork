@@ -2,14 +2,55 @@ html,
 body {
     height: 100%;
 }
-
+a {
+    text-decoration: none;
+}
 .wrap {
     min-height: 100%;
     height: auto;
     margin: 0 auto -60px;
     padding: 0 0 60px;
 }
-
+.calendar_notes {
+    width:600px;
+    height: 500px;
+    border:2px solid rgb(29, 28, 28);
+    border-radius: 9px;
+    margin: 50px auto 20px auto;
+}
+.calendar_notes td, th {
+    width:70px;
+    height:70px;
+    text-align:center;
+    font-size: 22px;
+}
+.calendar_notes th {
+    color:rgb(9, 75, 9);
+    font-size: 28px;
+}
+.calendar_notes .notes {
+    font-size: 14px !important;
+    font-weight: bold;
+}
+.calendar_notes .event_data{
+    font-size: 14px !important;
+    color: rgb(10, 13, 151);
+    font-weight: bold;
+}
+.calendar_notes .event_data a {
+    text-decoration: none;
+    color:rgb(10, 13, 151);
+    cursor: pointer;
+}
+.calendar_notes .event_data a:hover {
+    color:rgb(204, 162, 26);
+}
+.calendar_notes .event_data:hover {
+    background: rgb(18, 136, 7);
+    transition: 0.4s ease-in-out;
+    transform: scale(1.4, 1.4);
+    border-radius: 10px;
+}
 .wrap > .container {
     padding: 70px 15px 20px;
 }

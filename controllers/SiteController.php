@@ -10,7 +10,7 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use yii\db\Exception;
-use app\models\Yii2db;
+use app\models\Calendar;
 
 class SiteController extends Controller
 {
@@ -65,7 +65,7 @@ class SiteController extends Controller
     {   
         $get    =  \Yii::$app->getRequest();
         $id     =  $get->getQueryParam('id');
-        $result =  Yii2db::find()->andWhere(['=', 'id', $id])->one();    
+        $result =  Calendar::find()->andWhere(['=', 'id', $id])->one();    
 
         return $this->render('index');
     }

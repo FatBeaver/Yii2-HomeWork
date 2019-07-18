@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Yii2db */
+/* @var $model app\models\Calendar */
 
-$this->title = 'Create Yii2db';
-$this->params['breadcrumbs'][] = ['label' => 'Yii2dbs', 'url' => ['index']];
+$this->title = 'Новое событие';
+//$this->params['breadcrumbs'][] = ['label' => 'События', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="yii2db-create">
+<div class="calendar-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
