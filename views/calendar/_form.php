@@ -16,14 +16,15 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'content')->textarea(['rows' => 3]) ?>
 
-    <?= $form->field($model, 'date_of_create')->textInput(['type' => 'date']) ?>
-
-    <?= $form->field($model, 'date_of_change')->textInput(['type' => 'date']) ?>
-
     <?= $form->field($model, 'expiration_date')->textInput(['type' => 'date']) ?>
 
+    <?= $form->field($model, 'users')
+    ->checkboxList($viewModel->getUserOptions())
+    ->label('Пользователи')
+    ->hint('Пользователи имеющие доступ к заметке') ?>
+
     <div class="form-group">
-        <?= Html::submitButton('Создать', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Изменить', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

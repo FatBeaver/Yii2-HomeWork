@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use yii\widgets\ListView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\CalendarSearch */
@@ -20,41 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php //  echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?= GridView::widget([
+    <?= ListView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            //'id',
-            'name',
-            'content',
-            [
-                'attribute'  => 
-                    'date_of_create',
-                'format' => [
-                    'date',
-                    'php:d.m.Y H:i',
-                ]
-            ],
-            [
-                'attribute'  => 'date_of_change',
-                'format' => [
-                    'date',
-                    'php:d.m.Y H:i',
-                ]
-            ],
-            [
-                'attribute'  => 'expiration_date',
-                'format' => [
-                    'date',
-                    'php:d.m.Y H:i',
-                ]
-            ],                      
-            'author.username',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
+        'itemView' => '_item',
     ]); ?>
 
 

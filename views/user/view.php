@@ -7,15 +7,15 @@ use yii\widgets\DetailView;
 /* @var $model app\models\User */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Позьзователи', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="user-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
+    <?php if ($model->id == \Yii::$app->getUser()->getID()): ?> 
+   <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
@@ -25,14 +25,14 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
-
+    <?php endif; ?>
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+           // 'id',
             'username',
-            'password',
-            'access_token',
+           // 'password',
+           // 'access_token',
         ],
     ]) ?>
 

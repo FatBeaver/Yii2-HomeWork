@@ -43,13 +43,20 @@ class CalendarSearch extends Calendar
         $notesID = array();
         if ($notesID = \Yii::$app->request->get('id')) {
 
-            $id = \Yii::$app->user->identity->id;
+            $id = \Yii::$app->user->getId();
             $sql = "SELECT * FROM calendar WHERE author_id = $id and id IN(" . implode(",", $notesID) . ")";
             $query = Calendar::findBySql($sql);
+            
         } else {
 
-        $id = \Yii::$app->user->identity->id;
-        $query = Calendar::find()->where('author_id = :id', [':id' => $id]);
+            $id = \Yii::$app->user->identity->id;
+            $query = Calendar::find()->with(['author'])
+                        ->leftJoin(['access' => 'access'], 'calendar.id = access.note_id')
+                        ->andWhere([
+                        'or',
+                        ['author_id' => $id],
+                        ['access.user_id' => $id],
+                ]);
         }    
         // add conditions that should always apply here
 

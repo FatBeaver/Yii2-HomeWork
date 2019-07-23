@@ -87,6 +87,14 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             [['username', 'password'], 'required'],
         ];
     }
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+       return ['username' => 'Пользователь',
+               'password' => 'Пароль'];
+    }
 
     public function beforeSave($insert)
     {

@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\models\Access */
 /* @var $viewModels AccessCreateView */
 
-$this->title = 'Create Access';
+$this->title = 'Управление доступом к заметке';
 $this->params['breadcrumbs'][] = ['label' => 'Accesses', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

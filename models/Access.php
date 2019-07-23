@@ -39,8 +39,8 @@ class Access extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'note_id' => 'Note ID',
-            'user_id' => 'User ID',
+            'note_id' => 'Заметки',
+            'user_id' => 'Пользователи',
         ];
     }
     /**
@@ -56,4 +56,14 @@ class Access extends \yii\db\ActiveRecord
     public function getNote() {
         return $this->hasOne(Calendar::class, ['id' => 'note_id']);
     }
+
+    public static function saveAccess( Calendar $note, int $userId) {
+        $access = new self();
+        $access->setAttributes([
+            'note_id' => $note->id,
+            'user_id' => $userId,
+        ]);
+
+        $access->save();
+        }
 }

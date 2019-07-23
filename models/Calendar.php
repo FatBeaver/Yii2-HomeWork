@@ -2,6 +2,9 @@
 
 namespace app\models;
 
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "calendar".
@@ -24,6 +27,24 @@ class Calendar extends \yii\db\ActiveRecord
         return 'calendar';
     }
 
+    public function behaviors() {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'attributes' =>[ActiveRecord::EVENT_BEFORE_UPDATE => ['date_of_change']],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    } 
+    
+    public function beforeSave($insert)
+    {
+        if (!$this->author_id) {
+            $this->author_id = \Yii::$app->getUser()->getId();
+        }
+
+        return parent::beforeSave($insert);
+    }
     /**
      * {@inheritdoc}
      */
@@ -32,10 +53,37 @@ class Calendar extends \yii\db\ActiveRecord
         return [
             [['name', 'content', 'author_id'], 'required'],
             [['content'], 'string'],
-            [['date_of_create', 'expiration_date'], 'safe'],
+            [['date_of_change'], 'safe'],
+            [['date_of_create', 'expiration_date'], 'validateCreateDate'],
             [['author_id'], 'integer'],
             [['name'], 'string', 'max' => 255],
         ];
+    }
+
+    public function validateCreateDate() {
+        $createDate = date_create($this->date_of_create);
+        $expirationDate = date_create($this->expiration_date);
+
+        if (date_format($createDate, 'd') > date_format($expirationDate, 'd')) {
+
+            $this->addError('expiration_date', sprintf('Неверно указанна дата окончания события'));
+        }
+
+        return true;
+    } 
+
+    /**
+     * @return bool
+     */
+    public static function canEdit($model) {
+        $createDate = date_create($model->date_of_create);
+
+        if (date_format($createDate, 'd') < date('d')) {
+
+            return false;
+        }
+
+        return true;
     }
 
     /**

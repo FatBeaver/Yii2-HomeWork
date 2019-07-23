@@ -38,6 +38,7 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
+            ['label' => 'Пользователи', 'url' => ['/user/index']],
             ['label' => 'Активные события', 'url' => ['/calendar/index']],
             ['label' => 'Календарь', 'url' => ['/calendar/calendar']],
             ['label' => 'Страница Администратора', 'url' => ['/admin']],
