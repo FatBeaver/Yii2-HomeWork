@@ -9,7 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-
+use app\models\forms\UserForm;
 /**
  * UserController implements the CRUD actions for User model.
  */
@@ -66,9 +66,25 @@ class UserController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
-    {
+    {   
+       // $searchModel = new UserSearch();
+       // $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $model = UserForm::findOne(['id' => $id]);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+        ]);
+    }
+
+    public function actionRegistration() {
+        $model = new UserForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['calendar/index', 'id' => $model->id]);
+        }
+
+        return $this->render('registration', [
+            'model' => $model,
         ]);
     }
 

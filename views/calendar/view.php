@@ -11,6 +11,8 @@ $this->params['breadcrumbs'][] = ['label' => 'Calendars', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
+
+<?php if ($this->beginCache('view-calendar', ['duration' => 60])): ?>
 <div class="calendar-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
@@ -40,5 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'author_id',
         ],
     ]) ?>
+    <?= $this->endCache(); ?>
+    <?php endif; ?>
 
 </div>

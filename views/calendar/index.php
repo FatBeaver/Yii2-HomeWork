@@ -18,8 +18,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Добавить событие', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php //  echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <?= ListView::widget([
         'dataProvider' => $dataProvider,
         'itemView' => '_item',

@@ -8,7 +8,7 @@ use app\models\Access;
 
 class CalendarForm extends Calendar {
 
-    public $users =[];
+    public $users = [];
 
     public function rules() {
 

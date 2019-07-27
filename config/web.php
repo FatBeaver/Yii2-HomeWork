@@ -1,7 +1,8 @@
 <?php
 
 $params = require __DIR__ . '/params.php';
-$db = require __DIR__ . '/db.php';
+$db     = require __DIR__ . '/db.php';
+$redis  = require __DIR__ . '/redis.php';
 
 $config = [
     'id' => 'basic',
@@ -9,7 +10,7 @@ $config = [
     'bootstrap' => ['log'],
     'language' => 'ru-RU',
     'defaultRoute' => 'calendar/index',
-    'name' => 'Календарь',
+    'name' => 'My Calendar',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -20,7 +21,7 @@ $config = [
             'cookieValidationKey' => 'kK9HjNsa9lHLYEqxnwAi8VDOejQG8D6S',
         ],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => 'yii\redis\Cache',
         ],
         'user' => [
             'identityClass' => 'app\models\User',
@@ -45,6 +46,7 @@ $config = [
                 ],
             ],
         ],
+        'redis' => $redis,
         'db' => $db,
         'urlManager' => [
             'enablePrettyUrl' => true,

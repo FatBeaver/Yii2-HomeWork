@@ -5,6 +5,8 @@ namespace app\models\search;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Calendar;
+use yii\caching\DbDependency;
+use app\controllers\CalendarController;
 
 /**
  * CalendarSearch represents the model behind the search form of `app\models\Calendar`.
@@ -48,9 +50,9 @@ class CalendarSearch extends Calendar
             $query = Calendar::findBySql($sql);
             
         } else {
-
-            $id = \Yii::$app->user->identity->id;
-            $query = Calendar::find()->with(['author'])
+            
+            $id = \Yii::$app->getUser()->getId();
+            $query = Calendar::find()
                         ->leftJoin(['access' => 'access'], 'calendar.id = access.note_id')
                         ->andWhere([
                         'or',
@@ -59,10 +61,14 @@ class CalendarSearch extends Calendar
                 ]);
         }    
         // add conditions that should always apply here
+            $dependency = new DbDependency([
+                'sql' => 'SELECT COUNT(id) FROM calendar',
+            ]);
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
+            $dataProvider = new ActiveDataProvider([
+                'query' => $query->with('author')->with('access')->cache(3600, $dependency),
+            ]);
+
 
         $this->load($params);
 
@@ -82,8 +88,9 @@ class CalendarSearch extends Calendar
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'content', $this->content]);
+              ->andFilterWhere(['like', 'content', $this->content]);
 
         return $dataProvider;
     }
+
 }

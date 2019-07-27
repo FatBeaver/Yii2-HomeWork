@@ -85,6 +85,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return [
             [['username', 'password'], 'required'],
+            ['password', 'string', 'length' => [6,24]],
+            ['username', 'string', 'length' => [4,24]],
         ];
     }
     /**
@@ -102,7 +104,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             return false;
         }
 
-        if ($this->getIsNewRecord() && $this->password) {
+        if (!$this->$this->password) {
             $this->password  =  $this->saltPassword($this->password);
         }
 

@@ -13,25 +13,28 @@ $CalendarDay = 1;
 
     <table border="1" class="calendar_notes">
         <th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th>
-        <?php foreach ($monthNotes as $week): ?>
+        <?php for($i = 0; $i < 32; $i = $i + 7): ?>
             <tr>
-                <?php foreach($week as $day) {
+                <?php for ($j = 0; $j < 7; $j++) {
+                    if ($CalendarDay > 31) {
+                        break;
+                    }
                     $id = array();
-                    if ($day == null) {
+                    if ($monthNotes[$CalendarDay] == null) {
                         echo '<td>' . $CalendarDay . '</td>';
                     } else {
-                        foreach($day as $notes) {
-                            $id[] = $notes ->id;
+                        foreach($monthNotes[$CalendarDay] as $note) {
+                            $id[] = $note['id'];
                         }
-                        $notes = count($day);?>
-                        <?= '<td class="event_data">'?>
-                        <a href="<?=Yii::$app->urlManager->createUrl(['calendar/index', 'id' => $id]) ?>">
-                        <?='Cобытий <br/>' . $notes . '</a></td>'?>
+                            $notes = count($monthNotes[$CalendarDay]);?>
+                            <?= '<td class="event_data">'?>
+                            <a href="<?=Yii::$app->urlManager->createUrl(['calendar/index', 'id' => $id]) ?>">
+                            <?='Cобытий <br/>' . $notes . '</a></td>'?>
             <?php   }
                     $CalendarDay++;
                 } ?>
             </tr>
-                <?php endforeach; ?>
+                <?php endfor; ?>
     </table>
 
 </div>

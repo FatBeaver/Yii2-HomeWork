@@ -14,6 +14,8 @@ use app\models\forms\CalendarForm;
 use yii\web\ForbiddenHttpException;
 use app\models\Access;
 use app\objects\ViewModels\CalendarView;
+use yii\filters\HttpCache;
+use yii\db\Query;
 
 /**
  * CalendarController implements the CRUD actions for Calendar model.
@@ -46,6 +48,14 @@ class CalendarController extends Controller
                     ],
                 ],
             ],
+            'cache' => [
+                'class' => HttpCache::class,
+                'only'  => ['view', 'index'],
+                'lastModified' => function ($action, $params) {
+                    $time = new Query();
+                    return $time->from('calendar')->max('id');
+                }
+            ], 
         ];
     }
 
@@ -67,9 +77,9 @@ class CalendarController extends Controller
     public function actionCalendar() {
 
        $calendar = new Calendar();
-       $MonthNotes = $calendar->getNotesForCalendar();
+       $monthNotes = $calendar->getNotesForCalendar();
       
-        return $this->render('calendar', ['monthNotes' => $MonthNotes]);
+        return $this->render('calendar', ['monthNotes' => $monthNotes]);
 
     }
 

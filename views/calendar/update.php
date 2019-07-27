@@ -6,9 +6,9 @@ use yii\helpers\Html;
 /* @var $model app\models\Calendar */
 
 $this->title = 'Изменить событие: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Calendars', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Активные события', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Изменение события';
 ?>
 <div class="calendar-update">
 

@@ -53,7 +53,7 @@ class Calendar extends \yii\db\ActiveRecord
         return [
             [['name', 'content', 'author_id'], 'required'],
             [['content'], 'string'],
-            [['date_of_change'], 'safe'],
+            [['date_of_change', 'expiration_date'], 'safe'],
             [['date_of_create', 'expiration_date'], 'validateCreateDate'],
             [['author_id'], 'integer'],
             [['name'], 'string', 'max' => 255],
@@ -61,10 +61,19 @@ class Calendar extends \yii\db\ActiveRecord
     }
 
     public function validateCreateDate() {
+
         $createDate = date_create($this->date_of_create);
         $expirationDate = date_create($this->expiration_date);
 
-        if (date_format($createDate, 'd') > date_format($expirationDate, 'd')) {
+        $createDate = date_format($createDate, 'Ymd');
+        $expirationDate = date_format($expirationDate, 'Ymd');
+        
+        if ($this->expiration_date == null) {
+            $this->expiration_date = $this->date_of_create;
+
+        }
+
+        if ($createDate > $expirationDate) {
 
             $this->addError('expiration_date', sprintf('Неверно указанна дата окончания события'));
         }
@@ -102,75 +111,45 @@ class Calendar extends \yii\db\ActiveRecord
         ];
     }
 
+    
     public function getNotesForCalendar() {
+        
         $id = \Yii::$app->user->identity->id;
         $notes =  Calendar::find()->where('author_id = :id', [':id' => $id])
                                 ->andWhere('MONTH(date_of_create) = MONTH(NOW()) and YEAR(date_of_create) = YEAR(NOW())')
-                                ->all();
+                                ->asArray()->all();
 
-     
-        $calendarMonth = array( 'week1' => array(
-                                        'day1' => array(),
-                                        'day2' => array(),
-                                        'day3' => array(),
-                                        'day4' => array(),
-                                        'day5' => array(),
-                                        'day6' => array(),
-                                        'day7' => array(),
-                                ),
-                                'week2' => array(
-                                        'day8' =>  array(),
-                                        'day9' =>  array(),
-                                        'day10' => array(),
-                                        'day11' => array(),
-                                        'day12' => array(),
-                                        'day13' => array(),
-                                        'day14' => array(),
-                                ), 
-                                'week3' => array(
-                                        'day15' => array(),
-                                        'day16' => array(),
-                                        'day17' => array(),
-                                        'day18' => array(),
-                                        'day19' => array(),
-                                        'day20' => array(),
-                                        'day21' => array(),
-                                ),
-                                'week4' => array(
-                                        'day22' => array(),
-                                        'day23' => array(),
-                                        'day24' => array(),
-                                        'day25' => array(),
-                                        'day26' => array(),
-                                        'day27' => array(),
-                                        'day28' => array(),
-                                ),
-                                'week5' => array(
-                                        'day29' => array(),
-                                        'day30' => array(),
-                                        'day31' => array(),
-                                ));
         
-        $day = 1;                        
-        for ($week = 1; $week < 5; $week++) {
+        $calendarMonth = array();
+        
+        $date = new \DateTime('first day of this month');                 
+        for ($j = 1; $j < 32; $j++) {
 
-            for ($j = 1; $j < 7; $j++) {
-                $calendarMonth['week' . $week]['day' . $day];
-                $day++;
-                foreach ($notes as $note) {
+            foreach( $notes as $note) {
+            $timeNote = date_create($note['date_of_create']);
+            $timeNote = date_format($timeNote, 'd');
 
-                    $event = substr($note->date_of_create, 8, -9);
-                    if ($day == $event) {
-                        $calendarMonth['week' . $week]['day' .  $day][] = $note;
-                    } 
-
+                if ($date->format('d') == $timeNote) {
+                   $calendarMonth[$j][] = $note;
+                } else {
+                    if($calendarMonth[$j] != null) {
+                        continue;
+                    }
+                    $calendarMonth[$j] = null;
                 }
-            } 
-        }
+            }
+            $date = $date->modify('+1 day');
+        }   
+
         return $calendarMonth;
     }
      
+
     public function getAuthor() {
         return $this->hasOne(User::class, ['id' => 'author_id']);
     }
-}
+
+    public function getAccess() {
+        return $this->hasOne(Access::class, ['note_id' => 'id']); 
+    }
+}   

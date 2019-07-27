@@ -3,12 +3,11 @@
 use yii\helpers\Html;
 use app\models\Calendar;
 
-
 ?>
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3><?= \yii\helpers\Html::encode($model->name); ?></h3>
+        <h3><?= Html::encode($model->name); ?></h3>
     </div>
     <div class="panel-body">
         <h3>Автор события : <?= $model->author->username; ?></h3>
@@ -22,6 +21,12 @@ use app\models\Calendar;
             </a>
         <?php } else {?>
             <p class="not_edit_event">Событие закончилось</p>
+            <?= Html::a('Удалить', ['delete', 'id' => $model->id], ['class' => 'btn btn-danger', 
+                'data' => [
+                    'confirm' => 'Вы действительно хотите удалить это событие?',
+                    'method' => 'POST',
+                ],
+            ]); ?>
         <?php } ?>
     </div>
 </div>
