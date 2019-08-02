@@ -7,6 +7,52 @@ a {
 }
 a:hover {
     text-decoration: none;
+    color:white;
+}
+.user_profile_data {
+    margin: 30px 0 35px 0;
+    border-radius: 10px;
+    background: rgb(211, 209, 209);
+    width:450px !important;
+    padding : 20px;
+    font-size: 18px;
+}
+
+.string_data {
+    margin:14px 0 !important;
+    display:flex;
+    flex-direction: column;
+}
+.null_date {
+    border:none;
+}
+.string_data span {
+    color:rgb(26, 25, 25);
+    font-size: 22px;
+    font-weight: bold;
+}
+.edit_user_profile {
+    color:rgb(226, 223, 9);
+    border-radius: 7px;
+    padding:12px 10px;
+    background: rgb(4, 46, 161);
+    margin-left: 5px;
+    margin-top: 5px !important;
+    display: inline-block;
+}
+.edit_user_profile:hover {
+    background: rgb(4, 40, 138);
+}
+
+.user_profile_data_body {
+    padding:20px;
+    background: rgb(211, 209, 209);
+    border-radius:8px;
+}
+.create_action {
+    font-size: 30px;
+    margin: 15px auto;
+    display: inline-block;
 }
 .registration_button {
     margin-left: 20px;

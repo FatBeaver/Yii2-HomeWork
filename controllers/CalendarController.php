@@ -16,6 +16,9 @@ use app\models\Access;
 use app\objects\ViewModels\CalendarView;
 use yii\filters\HttpCache;
 use yii\db\Query;
+use app\models\forms\CalendarUploadedForm;
+use app\models\User;
+use yii\data\Pagination;
 
 /**
  * CalendarController implements the CRUD actions for Calendar model.
@@ -48,17 +51,18 @@ class CalendarController extends Controller
                     ],
                 ],
             ],
-            'cache' => [
+            /*'cache' => [
                 'class' => HttpCache::class,
                 'only'  => ['view', 'index'],
                 'lastModified' => function ($action, $params) {
                     $time = new Query();
                     return $time->from('calendar')->max('id');
                 }
-            ], 
+            ], */
         ];
     }
 
+    
     /**
      * Lists all Calendar models.
      * @return mixed
@@ -67,19 +71,23 @@ class CalendarController extends Controller
     {
         $searchModel = new CalendarSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $dataProvider->pagination->pageSize = 5;
+        
+        $userData = User::findOne(['id' => Yii::$app->getUser()->getId()]);
+        
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'userData' => $userData,
         ]);
     }
 
     public function actionCalendar() {
 
        $calendar = new Calendar();
-       $monthNotes = $calendar->getNotesForCalendar();
+       $years = $calendar->getNotesForCalendar();
       
-        return $this->render('calendar', ['monthNotes' => $monthNotes]);
+        return $this->render('calendar', ['years' => $years]);
 
     }
 
@@ -137,6 +145,7 @@ class CalendarController extends Controller
         $model = new CalendarForm();
 
         $model->author_id = \Yii::$app->getUser()->getId();
+        
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -209,4 +218,6 @@ class CalendarController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+
 }

@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use yii\web\UploadedFile;
 use app\models\User;
 use app\models\search\UserSearch;
 use yii\web\Controller;
@@ -10,6 +11,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use app\models\forms\UserForm;
+use app\models\forms\CalendarUploadedForm;
 /**
  * UserController implements the CRUD actions for User model.
  */
@@ -52,10 +54,14 @@ class UserController extends Controller
     {
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination->pageSize = 5;
+
+        $userData = User::find()->all();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'userData' => $userData,
         ]);
     }
 
@@ -115,14 +121,25 @@ class UserController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $userData = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $model = new CalendarUploadedForm();
+
+        if (Yii::$app->request->post()) {         
+
+            $file = UploadedFile::getInstance($userData, 'image');
+
+            $model->uploadFile($file, $model->image);
+            
+            $userData->saveImage($model->uploadFile($file, $userData->image)); 
+   
+            if ($userData->load(Yii::$app->request->post()) && $userData->save()) {
+                return $this->redirect(['calendar/index']);
+            }
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'model' => $userData,
         ]);
     }
 

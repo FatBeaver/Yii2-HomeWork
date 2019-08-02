@@ -42,6 +42,7 @@ class CalendarSearch extends Calendar
      */
     public function search($params)
     {   
+
         $notesID = array();
         if ($notesID = \Yii::$app->request->get('id')) {
 
@@ -66,7 +67,7 @@ class CalendarSearch extends Calendar
             ]);
 
             $dataProvider = new ActiveDataProvider([
-                'query' => $query->with('author')->with('access')->cache(3600, $dependency),
+                'query' => $query->with('author')->with('access'),
             ]);
 
 

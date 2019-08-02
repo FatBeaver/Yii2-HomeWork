@@ -19,6 +19,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= ListView::widget([
         'dataProvider' => $dataProvider,
         'itemView' => '_item',
+        'pager' => [
+            'firstPageLabel' => 'first',
+            'lastPageLabel' => 'last',
+            'prevPageLabel' => 'previous',
+            'nextPageLabel' => 'next',
+        ],
     ]); ?>
 
 </div>

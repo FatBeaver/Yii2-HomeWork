@@ -16,7 +16,8 @@ class m190710_185816_user_table extends Migration
             'id' => $this->primaryKey(),
             'username' => $this->string(),
             'password' => $this->string(),
-            'access_token' => $this->string()
+            'access_token' => $this->string(),
+            'image' => $this->string(),
         ]);
     }
 

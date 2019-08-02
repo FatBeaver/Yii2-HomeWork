@@ -87,7 +87,7 @@ class Calendar extends \yii\db\ActiveRecord
     public static function canEdit($model) {
         $createDate = date_create($model->date_of_create);
 
-        if (date_format($createDate, 'd') < date('d')) {
+        if (date_format($createDate, 'Ynj') < date('Ynj')) {
 
             return false;
         }
@@ -110,40 +110,87 @@ class Calendar extends \yii\db\ActiveRecord
             'author_id' => 'Author ID',
         ];
     }
-
+    //->andWhere("MONTH(date_of_create) = MONTH('" . $dateSql->format('Y-m-d') . "') 
+      //                              and YEAR(date_of_create) = YEAR('" . $dateSql->format('Y-m-d') . "')")
+    public function getData($id) { 
+        $notes =  Calendar::find()->where('author_id = :id', [':id' => $id])
+                        ->asArray()->all();
+        
+        return $notes;
+    }
     
+    public function getLastMonthDay($monthes) {
+        for ($i = 0; $i < 12; $i++) {
+
+            if ($monthes[$i] == 2) {
+                $monthsDays = 28;
+                return $monthsDays;
+            } elseif ($monthes[$i]  % 2 == 0) {
+                $monthsDays = 30;
+            } else {
+                $monthsDays = 31;
+            }
+
+        }
+
+        return $monthsDays;
+    }
+
+
+    /**
+     * @return array 
+     */
     public function getNotesForCalendar() {
         
         $id = \Yii::$app->user->identity->id;
-        $notes =  Calendar::find()->where('author_id = :id', [':id' => $id])
-                                ->andWhere('MONTH(date_of_create) = MONTH(NOW()) and YEAR(date_of_create) = YEAR(NOW())')
-                                ->asArray()->all();
-
         
-        $calendarMonth = array();
+        $date = new \DateTime('01-01-2015');
+
+        $sqlData = $this->getData($id, $date);  
+
+
+        while ($date->format('Ynj') < 2026121)  {
+
+            $monthLength = $this->getMonthLength ($date);
+
+            for($i = 1; $i < $monthLength; $i++) {  
+                foreach ($sqlData as $note) {
+
+                    $dateNote = date_create($note['date_of_create']);
+                    $dateNote = date_format($dateNote, 'ynj');
         
-        $date = new \DateTime('first day of this month');                 
-        for ($j = 1; $j < 32; $j++) {
-
-            foreach( $notes as $note) {
-            $timeNote = date_create($note['date_of_create']);
-            $timeNote = date_format($timeNote, 'd');
-
-                if ($date->format('d') == $timeNote) {
-                   $calendarMonth[$j][] = $note;
-                } else {
-                    if($calendarMonth[$j] != null) {
-                        continue;
+                    if ($date->format('yn' . $i) == $dateNote) {
+                        $calendarMonth[$date->format('y')][$date->format('n')][$i][] = $note;
+        
+                    } else {
+                        if ($calendarMonth[$date->format('y')][$date->format('n')][$i] != null) {
+                            continue;
+                        }
+                        $calendarMonth[$date->format('y')][$date->format('n')][$i] = null;
                     }
-                    $calendarMonth[$j] = null;
-                }
-            }
-            $date = $date->modify('+1 day');
-        }   
+                }   
+            }   
+            $date->modify('+1 month');
+        }
 
         return $calendarMonth;
     }
-     
+
+
+    public function getMonthLength ($date) {
+        if ($date->format('n') == 2) {
+            return 29;
+
+        } else if (($date->format('n') == 1) || ($date->format('n') == 3) || ($date->format('n') == 5) 
+        || ($date->format('n') == 7) || ($date->format('n') == 8) || ($date->format('n') == 10) 
+        || ($date->format('n') == 12) ) {
+
+            return 32;
+        }
+
+        return 31;
+    }
+    
 
     public function getAuthor() {
         return $this->hasOne(User::class, ['id' => 'author_id']);
@@ -152,4 +199,5 @@ class Calendar extends \yii\db\ActiveRecord
     public function getAccess() {
         return $this->hasOne(Access::class, ['note_id' => 'id']); 
     }
+
 }   

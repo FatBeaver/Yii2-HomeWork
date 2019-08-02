@@ -3,6 +3,7 @@
 namespace app\models;
 
 use yii\db\ActiveQuery;
+use app\models\forms\CalendarUploadedForm;
 
 /** 
  * @property int $id
@@ -85,7 +86,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return [
             [['username', 'password'], 'required'],
-            ['password', 'string', 'length' => [6,24]],
+            ['password', 'string', 'length' => [6,40]],
             ['username', 'string', 'length' => [4,24]],
         ];
     }
@@ -104,7 +105,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             return false;
         }
 
-        if (!$this->$this->password) {
+        if (!$this->password) {
             $this->password  =  $this->saltPassword($this->password);
         }
 
@@ -115,6 +116,28 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return true;
     }
 
+    public function saveImage($filename) {
+        $this->image = $filename;
+
+        return $this->save(false);
+    }
+
+    public function deleteImage() {
+
+        $imageUploadModel = new CalendarUploadedForm();
+        $imageUploadModel->deleteCurrentFile($this->image);
+    }
+
+    public function getImage() {
+
+        return ($this->image) ? '@web/' . 'uploads/image/' . $this->image : '@web/' . 'uploads/image/no_image.png';
+    }
+
+    public function beforeDelete()
+    {
+        $this->deleteImage();
+        return parent::beforeDelete();
+    }
     private function saltPassword(string $password) {
         return md5($password);
     }
