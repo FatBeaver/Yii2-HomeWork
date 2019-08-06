@@ -41,7 +41,7 @@ AppAsset::register($this);
             ['label' => 'Пользователи', 'url' => ['/user/index']],
             ['label' => 'Активные события', 'url' => ['/calendar/index']],
             ['label' => 'Календарь', 'url' => ['/calendar/calendar']],
-            ['label' => 'Страница Администратора', 'url' => ['/admin']],
+          //  ['label' => 'Страница Администратора', 'url' => ['/admin']],
             Yii::$app->user->isGuest ? (
                 ['label' => 'Войти', 'url' => ['/site/login']]
             ) : (

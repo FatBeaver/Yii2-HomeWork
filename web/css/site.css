@@ -7,7 +7,6 @@ a {
 }
 a:hover {
     text-decoration: none;
-    color:white;
 }
 .user_profile_data {
     margin: 30px 0 35px 0;
@@ -66,6 +65,8 @@ a:hover {
     color:white;
     background: rgb(2, 87, 2);
 }
+/*////////////////////////////////////*/
+
 .edit_event {
     padding: 8px 6px;
     border:1px solid rgb(16, 24, 139);
@@ -113,25 +114,50 @@ a:hover {
     font-size: 14px !important;
     font-weight: bold;
 }
-.calendar_notes .event_data{
-    font-size: 14px !important;
-    color: rgb(10, 13, 151);
-    font-weight: bold;
+.calendar_notes .notes a {
+    color:rgb(10, 10, 133) ;
 }
-.calendar_notes .event_data a {
-    text-decoration: none;
-    color:rgb(10, 13, 151);
-    cursor: pointer;
-}
-.calendar_notes .event_data a:hover {
-    color:rgb(204, 162, 26);
-}
-.calendar_notes .event_data:hover {
+.calendar_notes .notes:hover {
+    color:rgba(245, 241, 8, 0.856) !important;
     background: rgb(18, 136, 7);
     transition: 0.4s ease-in-out;
     transform: scale(1.4, 1.4);
-    border-radius: 10px;
+    border-radius: 10px;  
 }
+.calendar_notes .notes a:hover {
+    color:rgba(245, 241, 8, 0.856); 
+}
+
+.calendar_notes .week_end {
+    color:rgb(182, 13, 13);
+}
+.calendar_notes .null_date {
+    border:0px;
+}
+.calendar_title {
+    margin-left:41%;
+}
+.select_date {
+    margin-left: 33%;
+    margin-top: 25px;
+    font-size: 18px;
+}
+label[for="month"] {
+    margin-left: 15px ;
+}
+#select_calendar_date {
+    border-radius:5px;
+    margin-left: 10px;
+}
+.today_date {
+    color :rgb(15, 80, 9) !important;
+    font-size: 42px !important;
+    font-weight: bold;
+    background: rgb(214, 211, 211);
+}
+
+
+/*/////////////////////////////////////*/
 .wrap > .container {
     padding: 70px 15px 20px;
 }

@@ -85,11 +85,13 @@ class CalendarController extends Controller
     public function actionCalendar() {
 
        $calendar = new Calendar();
-       $years = $calendar->getNotesForCalendar();
+       $month = $calendar->getNotesForCalendar();
       
-        return $this->render('calendar', ['years' => $years]);
-
-    }
+        return $this->render('calendar', [
+            'month' => $month,
+            'calendar' => $calendar,
+            ]);
+    }        
 
     /**
      * Displays a single Calendar model.

@@ -1,201 +1,84 @@
 <?php 
 
 use yii\helpers\Html;
-use app\models\Calendar;
 
-$this->title = 'Календарь на текущий месяц';
+$this->title = 'Календарь';
 $this->params['breadcrumbs'][] = $this->title;
 
+$date = new \DateTime('first day of this month');
 
-$date =  new \DateTime('01-01-2015');
 ?>
 <div class="calendar_table">
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php foreach ($years as $year): ?>
-        <?php foreach ($year as $month): ?>
-  
-            <table border="1" class="calendar_notes">
+    <h1 class="calendar_title"><?= Html::encode($this->title) ?></h1>
 
-                <tr>
-                    <th>Пн</th>
-                    <th>Вт</th>
-                    <th>Ср</th>
-                    <th>Чт</th>
-                    <th>Пт</th>
-                    <th>Сб</th>
-                    <th>Вс</th> 
-                </tr> 
-                
-               <?php if ($date->format('w') == 0) {
-                           
-                           echo '<tr>';
-                                for ($i = 0; $i < 7; $i++) {
-                              
-                                   if ($month[$date->format('j')] != null) {
-                                       
-                                       $notes = count($month[$date->format('j')]);
-                                       echo '<td>Событий<br/>' . $notes . '</td>';
-                                   } else {
-                                       echo '<td>' . $date->format('j') . '</td>';
-                                   }
-                                   $date->modify('+1 day'); 
-                               }
-                           echo '</tr>';
-           
-                   }
-                   ///////////////////////////////////////////////////
-                   if ($date->format('w') == 1) {
-                                      
-                       echo '<tr>';
-                       echo '<td class="null_date"></td>';
-                            for ($i = 0; $i < 6; $i++) {
-                             
-                               if ($month[$date->format('j')] != null) {
-                                   
-                                   $notes = count($month[$date->format('j')]);
-                                   echo '<td>Событий<br/>' . $notes . '</td>';
-                               } else {
-                                   echo '<td>' . $date->format('j') . '</td>';
-                               }
-                               $date->modify('+1 day'); 
-                           }
-                       echo '</tr>';
-           
-                   }
-                   //////////////////////////////////////////////////////
-                   if ($date->format('w') == 2) {
-                                      
-                       echo '<tr>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                            for ($i = 0; $i < 5; $i++) {
-                              
-                               if ($month[$date->format('j')] != null) {
-                                   
-                                   $notes = count($month[$date->format('j')]);
-                                   echo '<td>Событий<br/>' . $notes . '</td>';
-                               } else {
-                                   echo '<td>' . $date->format('j') . '</td>';
-                               }
-                               $date->modify('+1 day'); 
-                           }
-                       echo '</tr>';
-           
-                   }
-                   ////////////////////////////////
-                   if ($date->format('w') == 3) {
-                                      
-                       echo '<tr>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                            for ($i = 0; $i < 4; $i++) {
-                        
-                               if ($month[$date->format('j')] != null) {
-                                   
-                                   $notes = count($month[$date->format('j')]);
-                                   echo '<td>Событий<br/>' . $notes . '</td>';
-                               } else {
-                                   echo '<td>' . $date->format('j') . '</td>';
-                               }
-                               $date->modify('+1 day'); 
-                           }
-                       echo '</tr>';
-           
-                   }
-                   //////////////////////////////////////
-                   if ($date->format('w') == 4) {
-                                      
-                       echo '<tr>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                            for ($i = 0; $i < 3; $i++) {
-           
-                               if ($month[$date->format('j')] != null) {
-                                   
-                                   $notes = count($month[$date->format('j')]);
-                                   echo '<td>Событий<br/>' . $notes . '</td>';
-                               } else {
-                                   echo '<td>' . $date->format('j') . '</td>';
-                               }
-                               $date->modify('+1 day'); 
-                           }
-                       echo '</tr>';
-           
-                   }
-                   //////////////////////////////////////
-                   if ($date->format('w') == 5) {
-                                      
-                       echo '<tr>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                            for ($i = 0; $i < 2; $i++) {
-                            
-                               if ($month[$date->format('j')] != null) {
-                                   
-                                   $notes = count($month[$date->format('j')]);
-                                   echo '<td>Событий<br/>' . $notes . '</td>';
-                               } else {
-                                   echo '<td>' . $date->format('j') . '</td>';
-                               }
-                               $date->modify('+1 day'); 
-                           }
-                       echo '</tr>';
-           
-                   }
-                   //////////////////////////////////
-                   if ($date->format('w') == 6) {
-                                      
-                       echo '<tr>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                       echo '<td class="null_date"></td>';
-                            for ($i = 0; $i < 1; $i++) {
-                                
-                               if ($month[$date->format('j')] != null) {
-                                   
-                                   $notes = count($month[$date->format('j')]);
-                                   echo '<td>Событий<br/>' . $notes . '</td>';
-                               } else {
-                                   echo '<td>' . $date->format('j') . '</td>';
-                               }
-                               $date->modify('+1 day'); 
-                           }
-                       echo '</tr>';
-                   } ?>
-                
-                <?php for ($k = 0; $k < 4; $k++): ?> 
+    <div class="select_date">  
+        <?php $calendar->selectedCalendarDate($date); ?> 
+    </div>
 
-                    <tr>
-                <?php   for ($i = 0; $i < 7; $i++) {
-                            if ( ( ( ($date->format('j')) == 28) && (($date->format('n')) == 2 ) ) ) {
-                                break;
-                            } 
-                
-                            if ($month[$date->format('j')] != null) {
-                                   
-                                $notes = count($month[$date->format('j')]);
-                                echo '<td>Событий<br/>' . $notes . '</td>';
-                            } else {
 
-                                echo '<td>' . $date->format('j') . '</td>';
-                            } 
-                            $date->modify('+1 day');      
-                        }?>
-                    </tr>
-                   
-                <?php endfor; ?>
 
-            </table>  
+    <table border="1" class="calendar_notes">
+        <tr>
+            <th>Пн</th>
+            <th>Вт</th>
+            <th>Ср</th>
+            <th>Чт</th>
+            <th>Пт</th>
+            <th class="week_end">Сб</th>
+            <th class="week_end">Вс</th>
+        </tr>
+<?php   
+        $currentDay = 1;
+        for ($i = 0; $i < count($month); $i++) {
+            echo '<tr>';
+/////////////////////////////////////////////////////////////////////////////////////////
+                if ($i === 0) {
+                    $weekLength = 7 - count($month[0]);
+                    for ($j = 0; $j < $weekLength; $j++) {
+                        echo '<td class="null_date"></td>';
+                    }
+                }                                                                     
+////////////////////////////////////////////////////////////////////////////////////////
+                foreach ($month[$i] as $day) {
+                    if ($day != null) {
 
-        <?php endforeach; ?>
-    <?php endforeach; ?>
+                        foreach ($day as $note_id) {
+                            $id[] = $note_id['id'];
+                        }
+                        $notes = count($day);
+
+                        echo '<td class="notes">'; ?>
+                        <?= Html::a('Cобытий</br>' . $notes, ['calendar/index', 'id' => $id]); ?>
+                  <?php echo'</td>';
+
+                        $currentDay++;
+
+                    } else {
+                       
+                        $time = $calendar->getThisDate();  
+                        if ( ($time->format('n') == $date->format('n')) && ($currentDay == date('j')) 
+                                && ($time->format('Y') == $date->format('Y')) ) {     
+                            echo '<td class="today_date">' . $currentDay . '</td>';
+                            $currentDay++;
+    
+                        } else {
+                            echo '<td>' . $currentDay . '</td>';
+                            $currentDay++;
+                        }    
+                    }    
+
+                    if ($currentDay > $calendar->getMonthLength($date)) {
+                        break;
+                    }
+                }
+
+                if ($curentDay > $calendar->getMonthLength($date)) {
+                    break;
+                }
+/////////////////////////////////////////////////////////////////////////////////////////               
+            echo '</tr>';
+        }
+        
+?>
+    </table>
 </div>

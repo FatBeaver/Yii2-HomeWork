@@ -110,11 +110,12 @@ class Calendar extends \yii\db\ActiveRecord
             'author_id' => 'Author ID',
         ];
     }
-    //->andWhere("MONTH(date_of_create) = MONTH('" . $dateSql->format('Y-m-d') . "') 
-      //                              and YEAR(date_of_create) = YEAR('" . $dateSql->format('Y-m-d') . "')")
-    public function getData($id) { 
+
+    public function getData($id, $date) { 
         $notes =  Calendar::find()->where('author_id = :id', [':id' => $id])
-                        ->asArray()->all();
+        ->andWhere('MONTH(date_of_create) = MONTH("' . $date->format('Y-m-d') . '")
+        and YEAR(date_of_create) = YEAR("' . $date->format('Y-m-d') . '")')
+        ->asArray()->all();
         
         return $notes;
     }
@@ -136,54 +137,194 @@ class Calendar extends \yii\db\ActiveRecord
         return $monthsDays;
     }
 
+    public function getThisDate() {
+        if (\Yii::$app->request->queryParams) {
+
+            (string) $m = \Yii::$app->request->get('month');
+            (string) $Y = \Yii::$app->request->get('year');
+            (string) $d = 01;
+            (string) $selectedDate = $Y . '-' . $m . '-' . $d;
+
+            $date = new \DateTime($selectedDate);
+            
+            return $date;
+
+        } else {
+
+            $date = new \DateTime('first day of this month');
+
+            return $date;
+        }
+    }
+
 
     /**
      * @return array 
      */
     public function getNotesForCalendar() {
         
-        $id = \Yii::$app->user->identity->id;
+        $id = \Yii::$app->getUser()->getId(); // Получение id юзера
+
+        $date = $this->getThisDate(); // Получение выбранного времени или текущего по умолчанию
         
-        $date = new \DateTime('01-01-2015');
-
-        $sqlData = $this->getData($id, $date);  
-
-
-        while ($date->format('Ynj') < 2026121)  {
+        $sqlData = $this->getData($id, $date);  // Получение данных из бд на выбраный месяц
 
             $monthLength = $this->getMonthLength ($date);
+            $currentDay = 1;
+            $week = 0;
 
-            for($i = 1; $i < $monthLength; $i++) {  
-                foreach ($sqlData as $note) {
+            $dayOfFirstWeek = $this->getWeekOfThisMonth($date); // Получение первого дня недели числом
 
-                    $dateNote = date_create($note['date_of_create']);
-                    $dateNote = date_format($dateNote, 'ynj');
-        
-                    if ($date->format('yn' . $i) == $dateNote) {
-                        $calendarMonth[$date->format('y')][$date->format('n')][$i][] = $note;
-        
-                    } else {
-                        if ($calendarMonth[$date->format('y')][$date->format('n')][$i] != null) {
+            for ($i = 0; $i < 8; $i++) { 
+
+                if ($dayOfFirstWeek == $i) {
+                    $dayOfFirstWeek++;
+                    
+                   if ($sqlData != null) {
+
+                        foreach ($sqlData as $note) {
+                                
+                            $dateNote = date_create($note['date_of_create']);
+                            $dateNote = date_format($dateNote, 'j');
+                    
+                            if ($i == $dateNote) {
+                                $calendarMonth[$week][$currentDay][] = $note;
+                    
+                            } else {
+                                if ($calendarMonth[$week][$currentDay] != null) {
+                                    continue;
+                                }
+                                $calendarMonth[$week][$currentDay] = null;
+                            }
+                        }
+
+                    }  else {
+
+                        $calendarMonth[$week][$currentDay] = null;
+                    }
+                } else {
+
+                   continue;   
+                }
+
+                $currentDay ++;
+            }
+            
+            while (true) {
+
+                $week++;
+                for($i = 0; $i < 7; $i++)
+                {
+                    if ($sqlData != null) {
+                    foreach ($sqlData as $note) {
+                            
+                        $dateNote = date_create($note['date_of_create']);
+                        $dateNote = date_format($dateNote, 'j');
+                
+                        if ($currentDay == $dateNote) {
+                            $calendarMonth[$week][$currentDay][] = $note;
+                
+                        } else {
+                            if ($calendarMonth[$week][$currentDay] != null) {
+                                continue;
+                            }
+                            $calendarMonth[$week][$currentDay] = null;
+                        }
+                    }
+                } else {
+
+                    $calendarMonth[$week][$currentDay] = null;
+                }
+                    $currentDay ++;
+                    if($currentDay > $monthLength - 1 ) break;
+                }
+               
+                if($currentDay  > $monthLength - 1) break;
+              } 
+            
+            return $calendarMonth;      
+        }   
+
+    public function selectedCalendarDate($date) { ?>
+
+        <form action="http://yii2.loc/web/calendar/calendar" method="GET">
+        <label for="">Год:</label>
+        <select name="year" id="year" >
+            <?php 
+                for ($i = 2000; $i < 2026; $i++) {
+                    if (isset($_GET['submit'])) {
+                        if ($i == \Yii::$app->request->get('year')) {
+                            echo '<option selected>' . $i . '</option>';
                             continue;
                         }
-                        $calendarMonth[$date->format('y')][$date->format('n')][$i] = null;
+                    } elseif ($i == $date->format('Y')) {
+                        echo '<option selected>' . $i . '</option>';
+                        continue;
                     }
-                }   
-            }   
-            $date->modify('+1 month');
+                    echo '<option>' . $i . '</option>';
+                }
+                  
+            ?>
+        </select>
+        <label for="month" >Месяц: </label>
+        <select name="month" id="month" >
+            <?php 
+                for ($i = 1; $i < 13; $i++) {
+                    if (isset($_GET['submit'])) {
+                        if ($i == \Yii::$app->request->get('month')) {
+                            echo '<option selected>' . $i . '</option>';
+                            continue;
+                        }
+                    } elseif ($i == $date->format('n')) {
+                        echo '<option selected>' . $i . '</option>';
+                        continue;
+                    }
+                    echo '<option>' . $i . '</option>';
+                }
+            ?>
+        </select>
+        <input type="submit" name="submit" id="select_calendar_date" value="Выбрать дату">
+        </form>
+    <?php
+    }    
+
+
+    public function getWeekOfThisMonth($date) {
+        if ($date->format('w') == 0) {
+            return 7;
         }
-
-        return $calendarMonth;
+        if ($date->format('w') == 1) {
+            return 1;
+        }
+        if ($date->format('w') == 2) {
+            return 2;
+        }
+        if ($date->format('w') == 3) {
+            return 3;
+        }
+        if ($date->format('w') == 4) {
+            return 4;
+        }
+        if ($date->format('w') == 5) {
+            return 5;
+        }
+        if ($date->format('w') == 6) {
+            return 6;
+        }
     }
-
 
     public function getMonthLength ($date) {
         if ($date->format('n') == 2) {
+            if ($date->format('y') == 16) {
+                if ($date->format('n') == 2) {
+                    return 30;
+                }
+            }
             return 29;
 
         } else if (($date->format('n') == 1) || ($date->format('n') == 3) || ($date->format('n') == 5) 
-        || ($date->format('n') == 7) || ($date->format('n') == 8) || ($date->format('n') == 10) 
-        || ($date->format('n') == 12) ) {
+            || ($date->format('n') == 7) || ($date->format('n') == 8) || ($date->format('n') == 10) 
+            || ($date->format('n') == 12) ) {
 
             return 32;
         }
