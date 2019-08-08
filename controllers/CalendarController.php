@@ -15,10 +15,10 @@ use yii\web\ForbiddenHttpException;
 use app\models\Access;
 use app\objects\ViewModels\CalendarView;
 use yii\filters\HttpCache;
-use yii\db\Query;
 use app\models\forms\CalendarUploadedForm;
 use app\models\User;
 use yii\data\Pagination;
+
 
 /**
  * CalendarController implements the CRUD actions for Calendar model.
@@ -84,13 +84,11 @@ class CalendarController extends Controller
 
     public function actionCalendar() {
 
-       $calendar = new Calendar();
-       $month = $calendar->getNotesForCalendar();
-      
+        $calendar = new Calendar();
+
         return $this->render('calendar', [
-            'month' => $month,
-            'calendar' => $calendar,
-            ]);
+            'model' => $calendar,
+        ]);
     }        
 
     /**

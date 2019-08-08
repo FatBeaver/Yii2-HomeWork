@@ -18,7 +18,10 @@ use yii\db\Expression;
  * @property int $author_id
  */
 class Calendar extends \yii\db\ActiveRecord
-{
+{   
+
+    public $month;
+    public $years;
     /**
      * {@inheritdoc}
      */
@@ -57,6 +60,7 @@ class Calendar extends \yii\db\ActiveRecord
             [['date_of_create', 'expiration_date'], 'validateCreateDate'],
             [['author_id'], 'integer'],
             [['name'], 'string', 'max' => 255],
+            //[['month', 'years'], 'safe'],
         ];
     }
 
@@ -111,6 +115,9 @@ class Calendar extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @return array
+     */
     public function getData($id, $date) { 
         $notes =  Calendar::find()->where('author_id = :id', [':id' => $id])
         ->andWhere('MONTH(date_of_create) = MONTH("' . $date->format('Y-m-d') . '")
@@ -120,6 +127,9 @@ class Calendar extends \yii\db\ActiveRecord
         return $notes;
     }
     
+    /**
+     * @return integer
+     */
     public function getLastMonthDay($monthes) {
         for ($i = 0; $i < 12; $i++) {
 
@@ -138,10 +148,11 @@ class Calendar extends \yii\db\ActiveRecord
     }
 
     public function getThisDate() {
-        if (\Yii::$app->request->queryParams) {
+        if (\Yii::$app->request->get()) {
 
-            (string) $m = \Yii::$app->request->get('month');
-            (string) $Y = \Yii::$app->request->get('year');
+
+            (string) $m = $_GET['Calendar']['month'];//\Yii::$app->request->get('month');
+            (string) $Y = $_GET['Calendar']['years'];//\Yii::$app->request->get('years');
             (string) $d = 01;
             (string) $selectedDate = $Y . '-' . $m . '-' . $d;
 
@@ -169,148 +180,44 @@ class Calendar extends \yii\db\ActiveRecord
         
         $sqlData = $this->getData($id, $date);  // Получение данных из бд на выбраный месяц
 
-            $monthLength = $this->getMonthLength ($date);
-            $currentDay = 1;
-            $week = 0;
+        $monthLength = $this->getMonthLength ($date); // Длина месяца в днях
+           
 
-            $dayOfFirstWeek = $this->getWeekOfThisMonth($date); // Получение первого дня недели числом
+        for ($i = 1; $i < $monthLength; $i++) {
 
-            for ($i = 0; $i < 8; $i++) { 
+            if ($sqlData != null) {
+                foreach($sqlData as $note) {
 
-                if ($dayOfFirstWeek == $i) {
-                    $dayOfFirstWeek++;
-                    
-                   if ($sqlData != null) {
+                    $timeNote = date_create($note['date_of_create']);
+                    $timeNote = date_format($timeNote, 'j');
 
-                        foreach ($sqlData as $note) {
-                                
-                            $dateNote = date_create($note['date_of_create']);
-                            $dateNote = date_format($dateNote, 'j');
-                    
-                            if ($i == $dateNote) {
-                                $calendarMonth[$week][$currentDay][] = $note;
-                    
-                            } else {
-                                if ($calendarMonth[$week][$currentDay] != null) {
-                                    continue;
-                                }
-                                $calendarMonth[$week][$currentDay] = null;
-                            }
+                    if ($i == $timeNote) {
+                        $calendarMonth[$i][] = $note;
+                    } else {
+                        if($calendarMonth[$i] != null) {
+                            continue;
                         }
 
-                    }  else {
-
-                        $calendarMonth[$week][$currentDay] = null;
+                        $calendarMonth[$i] = null;
                     }
-                } else {
-
-                   continue;   
                 }
-
-                $currentDay ++;
+            } else {
+                $calendarMonth[$i] = null;
             }
-            
-            while (true) {
-
-                $week++;
-                for($i = 0; $i < 7; $i++)
-                {
-                    if ($sqlData != null) {
-                    foreach ($sqlData as $note) {
-                            
-                        $dateNote = date_create($note['date_of_create']);
-                        $dateNote = date_format($dateNote, 'j');
-                
-                        if ($currentDay == $dateNote) {
-                            $calendarMonth[$week][$currentDay][] = $note;
-                
-                        } else {
-                            if ($calendarMonth[$week][$currentDay] != null) {
-                                continue;
-                            }
-                            $calendarMonth[$week][$currentDay] = null;
-                        }
-                    }
-                } else {
-
-                    $calendarMonth[$week][$currentDay] = null;
-                }
-                    $currentDay ++;
-                    if($currentDay > $monthLength - 1 ) break;
-                }
-               
-                if($currentDay  > $monthLength - 1) break;
-              } 
-            
-            return $calendarMonth;      
-        }   
-
-    public function selectedCalendarDate($date) { ?>
-
-        <form action="http://yii2.loc/web/calendar/calendar" method="GET">
-        <label for="">Год:</label>
-        <select name="year" id="year" >
-            <?php 
-                for ($i = 2000; $i < 2026; $i++) {
-                    if (isset($_GET['submit'])) {
-                        if ($i == \Yii::$app->request->get('year')) {
-                            echo '<option selected>' . $i . '</option>';
-                            continue;
-                        }
-                    } elseif ($i == $date->format('Y')) {
-                        echo '<option selected>' . $i . '</option>';
-                        continue;
-                    }
-                    echo '<option>' . $i . '</option>';
-                }
-                  
-            ?>
-        </select>
-        <label for="month" >Месяц: </label>
-        <select name="month" id="month" >
-            <?php 
-                for ($i = 1; $i < 13; $i++) {
-                    if (isset($_GET['submit'])) {
-                        if ($i == \Yii::$app->request->get('month')) {
-                            echo '<option selected>' . $i . '</option>';
-                            continue;
-                        }
-                    } elseif ($i == $date->format('n')) {
-                        echo '<option selected>' . $i . '</option>';
-                        continue;
-                    }
-                    echo '<option>' . $i . '</option>';
-                }
-            ?>
-        </select>
-        <input type="submit" name="submit" id="select_calendar_date" value="Выбрать дату">
-        </form>
-    <?php
-    }    
+        }
+        return $calendarMonth;
+    }        
 
 
+    /**
+     * @return integer
+     */
     public function getWeekOfThisMonth($date) {
         if ($date->format('w') == 0) {
             return 7;
         }
-        if ($date->format('w') == 1) {
-            return 1;
-        }
-        if ($date->format('w') == 2) {
-            return 2;
-        }
-        if ($date->format('w') == 3) {
-            return 3;
-        }
-        if ($date->format('w') == 4) {
-            return 4;
-        }
-        if ($date->format('w') == 5) {
-            return 5;
-        }
-        if ($date->format('w') == 6) {
-            return 6;
-        }
+        
+        return $date->format('w');
     }
 
     public function getMonthLength ($date) {
@@ -332,6 +239,64 @@ class Calendar extends \yii\db\ActiveRecord
         return 31;
     }
     
+    /**
+     * @return array
+     */
+    public function setIdInArray($day) {
+        
+        foreach($day as $note) {
+            $id[] = $note['id'];
+        } 
+
+        return $id;
+    }
+
+
+    public function getOptoinsDate($date) {
+        if ($date == 'years') {
+            $years = [
+                '2010' => '2010',
+                '2011' => '2011',
+                '2012' => '2012',
+                '2013' => '2013',
+                '2014' => '2014',
+                '2015' => '2015',
+                '2016' => '2016',
+                '2017' => '2017',
+                '2018' => '2018',
+                '2019' => '2019',
+                '2020' => '2020',
+                '2021' => '2021',
+                '2022' => '2022',
+                '2023' => '2023',
+                '2024' => '2024',
+                '2025' => '2025',
+                '2026' => '2026',
+            ];  
+
+            return $years;
+        } 
+
+        if ($date == 'month') {
+            $month = [
+                '1'   => 'Январь',
+                '2'   => 'Февраль',
+                '3'   => 'Март',
+                '4'   => 'Апрель',
+                '5'   => 'Май',
+                '6'   => 'Июнь',
+                '7'   => 'Июль',
+                '8'   => 'Август',
+                '9'   => 'Сентябрь',
+                '10'  => 'Октябрь',
+                '11'  => 'Ноябрь',
+                '12'  => 'Декабрь',
+            ];
+
+            return $month;
+        }
+    }
+
 
     public function getAuthor() {
         return $this->hasOne(User::class, ['id' => 'author_id']);

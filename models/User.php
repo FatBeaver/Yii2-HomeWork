@@ -138,6 +138,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         $this->deleteImage();
         return parent::beforeDelete();
     }
+    
     private function saltPassword(string $password) {
         return md5($password);
     }

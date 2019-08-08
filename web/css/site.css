@@ -93,67 +93,98 @@ a:hover {
     margin: 0 auto -60px;
     padding: 0 0 60px;
 }
-.calendar_notes {
-    width:600px;
-    height: 500px;
-    border:2px solid rgb(29, 28, 28);
-    border-radius: 9px;
-    margin: 50px auto 20px auto;
-}
-.calendar_notes td, th {
-    width:70px;
-    height:70px;
-    text-align:center;
-    font-size: 22px;
-}
-.calendar_notes th {
-    color:rgb(9, 75, 9);
-    font-size: 28px;
-}
-.calendar_notes .notes {
-    font-size: 14px !important;
-    font-weight: bold;
-}
-.calendar_notes .notes a {
-    color:rgb(10, 10, 133) ;
-}
-.calendar_notes .notes:hover {
-    color:rgba(245, 241, 8, 0.856) !important;
-    background: rgb(18, 136, 7);
-    transition: 0.4s ease-in-out;
-    transform: scale(1.4, 1.4);
-    border-radius: 10px;  
-}
-.calendar_notes .notes a:hover {
-    color:rgba(245, 241, 8, 0.856); 
+
+/*/////////////////////////////////////*/
+.main_calendar_block {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.calendar_notes .week_end {
-    color:rgb(182, 13, 13);
+.calendar {
+    margin-top: 30px;
+    border:2px solid rgb(39, 39, 39);
+    border-radius: 11px;
+    background: rgb(235, 235, 235);
+    box-shadow: 3px 6px 3px 5px gray;
 }
-.calendar_notes .null_date {
-    border:0px;
+.wrapper_calendar {
+    width:712px; 
 }
-.calendar_title {
-    margin-left:41%;
+.days_name {
+    display:flex;
+    background: rgb(39, 38, 38);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0px 2px 4px 4px gray;
 }
-.select_date {
-    margin-left: 33%;
-    margin-top: 25px;
-    font-size: 18px;
+
+.week_end {
+    color:rgb(202, 19, 13) !important;
 }
-label[for="month"] {
-    margin-left: 15px ;
-}
-#select_calendar_date {
-    border-radius:5px;
-    margin-left: 10px;
-}
-.today_date {
-    color :rgb(15, 80, 9) !important;
-    font-size: 42px !important;
+.header_name_day {
+    color:rgb(238, 235, 235);
+    width:100px;
+    height:75px;
+    margin-bottom: 10px !important;
+    margin: 0.5px;
+    text-align: center;
+    line-height: 85px;
+    font-size: 34px;
     font-weight: bold;
-    background: rgb(214, 211, 211);
+}
+.day_with_notes {
+    display:inline-block;
+    color:rgb(9, 131, 29);
+    width:100px;
+    height:75px;
+    margin: 0.5px;
+    text-align: center;
+    line-height: 70px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 7px;
+    background: rgb(212, 208, 208);
+    transition: 0.4s ease-in-out;
+}
+.day_with_notes:hover {
+    transition: 0.4s ease-in-out;
+    background: rgb(192, 189, 189);
+    transform: scale(1.4, 1.4);
+}
+
+.day_without_notes {
+    display:inline-block;
+    width:100px;
+    height:75px;
+    margin: 0.5px;
+    text-align: center;
+    line-height: 70px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.day_number1 {
+    margin-left: 0;
+}
+.day_number2 {
+    margin-left: 101px;
+}
+.day_number3 {
+    margin-left: 202px;
+}
+.day_number4 {
+    margin-left: 303px;
+}
+.day_number5 {
+    margin-left: 404.5px;
+}
+.day_number6 {
+    margin-left: 505.5px;
+}
+.day_number7 {
+    margin-left: 606.5px;
 }
 
 
