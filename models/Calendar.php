@@ -151,30 +151,20 @@ class Calendar extends \yii\db\ActiveRecord
 
         for ($i = 1; $i < ($date->format('t') + 1); $i++) {
 
-            if ($sqlData != null) { // Если есть заметки на выбранный месяц
-
-                foreach($sqlData as $note) { // Каждую заметку сверяем с текущим днём
-
-                    $timeNote = date_create($note['date_of_create']); 
-                    $timeNote = date_format($timeNote, 'j');
-
-                    if ($i == $timeNote) {
-                        $calendarMonth[$i][] = $note;
-
-                    } else {
-
-                        if($calendarMonth[$i] != null) {
-                            continue;
-                        }
-
-                        $calendarMonth[$i] = null;
-                    }
-                }
-
-            } else {
-                $calendarMonth[$i] = null;
-            }
+            $calendarMonth[$i] = null;
         }
+
+        foreach ($sqlData as $note) {
+
+            $dateNoteCreate = date_create($note['date_of_create']); 
+            $dateNoteCreate = date_format($dateNoteCreate, 'j');
+
+            $calendarMonth[$dateNoteCreate][] = $note;
+            }
+        
+        echo "<pre>";
+        print_r($calendarMonth);
+        echo "</pre>";
         
         return $calendarMonth;
     }        

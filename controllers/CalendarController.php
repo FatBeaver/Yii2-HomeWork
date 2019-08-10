@@ -82,6 +82,7 @@ class CalendarController extends Controller
         ]);
     }
 
+
     public function actionCalendar() {
 
         $calendar = new Calendar();
@@ -98,6 +99,7 @@ class CalendarController extends Controller
         ]);
     }        
 
+    
     /**
      * Displays a single Calendar model.
      * @param integer $id
