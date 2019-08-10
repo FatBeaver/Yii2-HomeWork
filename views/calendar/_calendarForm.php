@@ -9,18 +9,25 @@ $years = $model->getOptoinsDate('years');
 
 <div class="select_date">
     <?php $form = ActiveForm::begin(['method' => 'GET']); ?>
-    
-    <?= $form->field($model, 'years')->dropDownList([
-        $years,
-    ])->label('Выберите год'); ?>
+        <div class="inner_active_form">
 
-    <?= $form->field($model, 'month')->dropDownList([
-        $month,
-    ])->label('Выберите месяц'); ?>
+            <?= $form->field($model, 'years')->dropDownList([
+                $years,
+            ])->label('Выберите год'); ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Выбрать дату', ['class' => 'btn btn-success']) ?>
-    </div>
+            <?= $form->field($model, 'month')->dropDownList([
+                $month,
+            ])->label('Выберите месяц'); ?>
 
+            <div class="form-group">
+                <?= Html::submitButton('Выбрать дату', ['class' => 'btn btn-success date_button']) ?>
+            </div>
+
+        </div>        
     <?php ActiveForm::end(); ?>
+    <h2>
+        Сегодня : 
+        <?= date('j') . ' ' . $model->headerCalendarDate($model->getOptoinsDate('calendar_head')) . 
+        ' ' . date('Y') ?>
+    </h2>
 </div>

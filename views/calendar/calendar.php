@@ -5,17 +5,13 @@ use yii\helpers\Html;
 $this->title = 'Календарь';
 $this->params['breadcrumbs'][] = $this->title;
 
-$month = $model->getNotesForCalendar();
-$date = new \DateTime('first day of this month');
-$weekEndDate = $model->getThisDate();
 ?>
 
 <div class="main_calendar_block">
     <h1 class="calendar_title"><?= Html::encode($this->title) ?></h1>
 
-    <?= $this->render( '_calendarForm',[
-        'model' => $model,
-        'viewModel' => $viewModel,
+    <?= $this->render( '_calendarForm',[   //-------Форма выбора даты 
+        'model' => $model,         
     ]); ?>
 
     <div class="calendar">
@@ -30,35 +26,10 @@ $weekEndDate = $model->getThisDate();
             <div class="header_name_day week_end">Вс</div>   
         </div>
             <?php
+            for ($i = 1; $i < $date->format('N'); $i++) {
+                echo '<div class="days_of_prev_month"></div>';
+            }
             foreach ($month as $number => $day) {
-                
-                if ($number == 1) {
-
-                    $dayFirstWeek = $model->getWeekOfThisMonth($model->getThisDate());
-
-                    if ($day != null) {
-                        $id = $model->setIdInArray($day);
-
-                        echo '<div class="day_with_notes day_number' . $dayFirstWeek . '">';
-                        echo Html::a('Событий ' . count($day) , ['calendar/index', 'id' => $id]);
-                        echo '</div>';
-
-                    } else {
-
-                        if ($weekEndDate->format('D') == 'Mon' || $weekEndDate->format('D') == 'Sun') {
-                            echo '<div class="day_without_notes week_end day_number' . $dayFirstWeek . 
-                            '">' . $number . '</div>';
-
-                        } else {
-                            echo '<div class="day_without_notes day_number' . $dayFirstWeek . 
-                            '">' . $number . '</div>';
-                        }
-
-                    }
-
-                    $weekEndDate->modify('+1 day');
-                    continue;
-                }
 
                 if ($day != null) {   
 
@@ -69,13 +40,13 @@ $weekEndDate = $model->getThisDate();
                     echo '</div>';
 
                 } else {
-                    if (($weekEndDate->format('D') == 'Sat') || $weekEndDate->format('D') == 'Sun') {
+                    if (($date->format('D') == 'Sat') || $date->format('D') == 'Sun') {
                         echo '<div class="day_without_notes week_end">' . $number . '</div>';
                     } else {
                         echo '<div class="day_without_notes">' . $number . '</div>';
                     }
                 }
-                $weekEndDate->modify('+1 day');
+                $date->modify('+1 day');
             }
         ?>
     </div>

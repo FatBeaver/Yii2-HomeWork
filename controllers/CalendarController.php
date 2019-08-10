@@ -86,8 +86,15 @@ class CalendarController extends Controller
 
         $calendar = new Calendar();
 
+        $id    = Yii::$app->getUser()->getId();
+        $date  = $calendar->getThisDate();
+        
+        $month = Calendar::getNotesForCalendar($id, $date);
+
         return $this->render('calendar', [
             'model' => $calendar,
+            'date'  => $date,
+            'month' => $month,
         ]);
     }        
 

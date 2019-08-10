@@ -115,7 +115,7 @@ a:hover {
     display:flex;
     background: rgb(39, 38, 38);
     border-radius: 10px;
-    margin-bottom: 10px;
+    margin-bottom: -10px;
     box-shadow: 0px 2px 4px 4px gray;
 }
 
@@ -165,26 +165,18 @@ a:hover {
     font-weight: bold;
 }
 
-.day_number1 {
-    margin-left: 0;
+.days_of_prev_month {
+    width:100px ;
+    height:75px ;
+    display:inline-block;
+    line-height: 70px;
 }
-.day_number2 {
-    margin-left: 101px;
+.inner_active_form {
+    display:flex;
+    justify-content: space-between;
 }
-.day_number3 {
-    margin-left: 202px;
-}
-.day_number4 {
-    margin-left: 303px;
-}
-.day_number5 {
-    margin-left: 404.5px;
-}
-.day_number6 {
-    margin-left: 505.5px;
-}
-.day_number7 {
-    margin-left: 606.5px;
+.date_button {
+    margin-top: 24px;
 }
 
 

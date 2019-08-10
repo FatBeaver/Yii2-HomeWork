@@ -114,42 +114,12 @@ class Calendar extends \yii\db\ActiveRecord
             'author_id' => 'Author ID',
         ];
     }
-
-    /**
-     * @return array
-     */
-    public function getData($id, $date) { 
-        $notes =  Calendar::find()->where('author_id = :id', [':id' => $id])
-        ->andWhere('MONTH(date_of_create) = MONTH("' . $date->format('Y-m-d') . '")
-        and YEAR(date_of_create) = YEAR("' . $date->format('Y-m-d') . '")')
-        ->asArray()->all();
-        
-        return $notes;
-    }
     
     /**
-     * @return integer
+     * @return string
      */
-    public function getLastMonthDay($monthes) {
-        for ($i = 0; $i < 12; $i++) {
-
-            if ($monthes[$i] == 2) {
-                $monthsDays = 28;
-                return $monthsDays;
-            } elseif ($monthes[$i]  % 2 == 0) {
-                $monthsDays = 30;
-            } else {
-                $monthsDays = 31;
-            }
-
-        }
-
-        return $monthsDays;
-    }
-
     public function getThisDate() {
         if (\Yii::$app->request->get()) {
-
 
             (string) $m = $_GET['Calendar']['month'];//\Yii::$app->request->get('month');
             (string) $Y = $_GET['Calendar']['years'];//\Yii::$app->request->get('years');
@@ -172,28 +142,27 @@ class Calendar extends \yii\db\ActiveRecord
     /**
      * @return array 
      */
-    public function getNotesForCalendar() {
+    public static function getNotesForCalendar($id, $date) {
         
-        $id = \Yii::$app->getUser()->getId(); // Получение id юзера
+        $sqlData =  Calendar::find()->where('author_id = :id', [':id' => $id])
+            ->andWhere('MONTH(date_of_create) = MONTH("' . $date->format('Y-m-d') . '")
+            and YEAR(date_of_create) = YEAR("' . $date->format('Y-m-d') . '")')
+            ->asArray()->all(); // Получение заметок из бд на выбранный пользователем месяц; 
 
-        $date = $this->getThisDate(); // Получение выбранного времени или текущего по умолчанию
-        
-        $sqlData = $this->getData($id, $date);  // Получение данных из бд на выбраный месяц
+        for ($i = 1; $i < ($date->format('t') + 1); $i++) {
 
-        $monthLength = $this->getMonthLength ($date); // Длина месяца в днях
-           
+            if ($sqlData != null) { // Если есть заметки на выбранный месяц
 
-        for ($i = 1; $i < $monthLength; $i++) {
+                foreach($sqlData as $note) { // Каждую заметку сверяем с текущим днём
 
-            if ($sqlData != null) {
-                foreach($sqlData as $note) {
-
-                    $timeNote = date_create($note['date_of_create']);
+                    $timeNote = date_create($note['date_of_create']); 
                     $timeNote = date_format($timeNote, 'j');
 
                     if ($i == $timeNote) {
                         $calendarMonth[$i][] = $note;
+
                     } else {
+
                         if($calendarMonth[$i] != null) {
                             continue;
                         }
@@ -201,48 +170,34 @@ class Calendar extends \yii\db\ActiveRecord
                         $calendarMonth[$i] = null;
                     }
                 }
+
             } else {
                 $calendarMonth[$i] = null;
             }
         }
+        
         return $calendarMonth;
     }        
 
 
     /**
-     * @return integer
+     * @return string
      */
-    public function getWeekOfThisMonth($date) {
-        if ($date->format('w') == 0) {
-            return 7;
-        }
-        
-        return $date->format('w');
-    }
+    public function headerCalendarDate($date) {
 
-    public function getMonthLength ($date) {
-        if ($date->format('n') == 2) {
-            if ($date->format('y') == 16) {
-                if ($date->format('n') == 2) {
-                    return 30;
-                }
+        foreach ($date as $number => $month) {
+            if ($number == date('n')) {
+
+                return $month;
             }
-            return 29;
-
-        } else if (($date->format('n') == 1) || ($date->format('n') == 3) || ($date->format('n') == 5) 
-            || ($date->format('n') == 7) || ($date->format('n') == 8) || ($date->format('n') == 10) 
-            || ($date->format('n') == 12) ) {
-
-            return 32;
         }
-
-        return 31;
     }
-    
+
+
     /**
      * @return array
      */
-    public function setIdInArray($day) {
+    public function setIdInArray($day) { // Получение ID заметок для день с заметками для ссылки
         
         foreach($day as $note) {
             $id[] = $note['id'];
@@ -252,27 +207,14 @@ class Calendar extends \yii\db\ActiveRecord
     }
 
 
+    /**
+     * @return array
+     */
     public function getOptoinsDate($date) {
         if ($date == 'years') {
-            $years = [
-                '2010' => '2010',
-                '2011' => '2011',
-                '2012' => '2012',
-                '2013' => '2013',
-                '2014' => '2014',
-                '2015' => '2015',
-                '2016' => '2016',
-                '2017' => '2017',
-                '2018' => '2018',
-                '2019' => '2019',
-                '2020' => '2020',
-                '2021' => '2021',
-                '2022' => '2022',
-                '2023' => '2023',
-                '2024' => '2024',
-                '2025' => '2025',
-                '2026' => '2026',
-            ];  
+            for ($i = 2012; $i < 2026; $i++) {
+                $years[$i] = $i;
+            }
 
             return $years;
         } 
@@ -291,6 +233,25 @@ class Calendar extends \yii\db\ActiveRecord
                 '10'  => 'Октябрь',
                 '11'  => 'Ноябрь',
                 '12'  => 'Декабрь',
+            ];
+
+            return $month;
+        }
+
+        if ($date == 'calendar_head') {
+            $month = [
+                '1'   => 'Января',
+                '2'   => 'Февраля',
+                '3'   => 'Марта',
+                '4'   => 'Апреля',
+                '5'   => 'Мая',
+                '6'   => 'Июня',
+                '7'   => 'Июля',
+                '8'   => 'Августа',
+                '9'   => 'Сентября',
+                '10'  => 'Октября',
+                '11'  => 'Ноября',
+                '12'  => 'Декабря',
             ];
 
             return $month;
