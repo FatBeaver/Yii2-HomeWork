@@ -160,34 +160,16 @@ class Calendar extends \yii\db\ActiveRecord
             $dateNoteCreate = date_format($dateNoteCreate, 'j');
 
             $calendarMonth[$dateNoteCreate][] = $note;
-            }
-        
-        echo "<pre>";
-        print_r($calendarMonth);
-        echo "</pre>";
+        }
         
         return $calendarMonth;
     }        
 
 
     /**
-     * @return string
+     * @return array    
      */
-    public function headerCalendarDate($date) {
-
-        foreach ($date as $number => $month) {
-            if ($number == date('n')) {
-
-                return $month;
-            }
-        }
-    }
-
-
-    /**
-     * @return array
-     */
-    public function setIdInArray($day) { // Получение ID заметок для день с заметками для ссылки
+    public function setIdInArray($day) { // Получение ID заметок для ссылки
         
         foreach($day as $note) {
             $id[] = $note['id'];
@@ -223,25 +205,6 @@ class Calendar extends \yii\db\ActiveRecord
                 '10'  => 'Октябрь',
                 '11'  => 'Ноябрь',
                 '12'  => 'Декабрь',
-            ];
-
-            return $month;
-        }
-
-        if ($date == 'calendar_head') {
-            $month = [
-                '1'   => 'Января',
-                '2'   => 'Февраля',
-                '3'   => 'Марта',
-                '4'   => 'Апреля',
-                '5'   => 'Мая',
-                '6'   => 'Июня',
-                '7'   => 'Июля',
-                '8'   => 'Августа',
-                '9'   => 'Сентября',
-                '10'  => 'Октября',
-                '11'  => 'Ноября',
-                '12'  => 'Декабря',
             ];
 
             return $month;

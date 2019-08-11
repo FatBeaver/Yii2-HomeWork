@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\i18n\Formatter;
+use yii\i18n\MessageFormatter;
 
 $month = $model->getOptoinsDate('month');
 $years = $model->getOptoinsDate('years');
@@ -24,10 +26,12 @@ $years = $model->getOptoinsDate('years');
             </div>
 
         </div>        
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
     <h2>
         Сегодня : 
-        <?= date('j') . ' ' . $model->headerCalendarDate($model->getOptoinsDate('calendar_head')) . 
-        ' ' . date('Y') ?>
+        <?php 
+            Yii::$app->formatter->locale = 'ru-RU';
+            echo Yii::$app->formatter->asDate(date('Y-m-d'));
+        ?>
     </h2>
 </div>

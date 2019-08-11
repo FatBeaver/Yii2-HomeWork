@@ -173,7 +173,9 @@ a:hover {
 }
 .inner_active_form {
     display:flex;
+    width:360px;
     justify-content: space-between;
+    margin-bottom: -20px;
 }
 .date_button {
     margin-top: 24px;
